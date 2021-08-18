@@ -1,0 +1,69 @@
+﻿@model ShoppingStore.Models.Home.HomeIndexViewModel
+@using PagedList;
+@using PagedList.Mvc;
+@{ 
+    ViewBag.Title = "Home Page";
+}
+<div class="row">
+    <div class="col-md-6">
+        <img src="../Images/slider-1.jpg" style="height:300px; width: 100%" alt="Alternate Text" />
+    </div>
+</div>
+
+<div class="row">
+    <div class="olContent f1">
+        <h2 style="color:black">Search Product/Category</h2>
+    </div>
+    <form action="/" method="post">
+        <div class="olSearch fr">
+            <input type="text" name="search" style="width:85%; float:left;" placeholder="Enter Keyword" class="inputComn houseText form-control" />
+            <button type="submit" style="width:15%; float:left;" class="searchBtn"><i class="fa fa-search"></i></button>
+        </div>
+    </form>
+</div>
+
+<div class="row">
+    <div class="col-md-12 content">
+        <div class="page-header">
+            <h2>Our Products <small>trending</small></h2>
+        </div>
+    </div>
+</div>
+
+<div class="row product-container">
+   @foreach (var item in Model.ListOfProducts)
+   {
+    <div class="col-md-3 col-sm-3 col-xs-6" style="margin-bottom:8px">
+        <div class="thumbnail product-item" style="height:300px">
+
+            <img class="img-fluid" title="Click to View Product details"
+                 style="cursor:pointer; height:160px; width:100%"
+                 src="~/ProductImg/@item.ProductImage" />
+            
+            <div class="caption">
+                <h5>@item.ProductName</h5>
+                <p class="product-item-price"> <span>&#8377;</span> @item.Price </p>
+                @if (item.Quantity > 0)
+                {
+                    using (Html.BeginForm("AddToCart", "Home", new { productId = item.ProductId }, FormMethod.Post))
+                    {
+                        <button type="submit" class="pull-right"><i class="fa fa-shopping-cart"></i></button>
+                    }
+                    <p>Available</p>
+                }
+                else
+                {
+                    <p>Not Available</p>
+                }
+                @if (item.IsFeatured == true)
+                {
+                    <div class="product-item-badge">New</div>
+                }
+            </div>
+        </div>
+    </div>
+   }
+</div>
+<div class="container">
+    @Html.PagedListPager(Model.ListOfProducts, page => Url.Action("Index", new { page, search = Request.QueryString["search"] }))
+</div>
